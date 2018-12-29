@@ -4,6 +4,8 @@ package
 	
 	import dynamicFrame.FrameGenerator;
 	
+	import flash.desktop.Clipboard;
+	import flash.desktop.ClipboardFormats;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -47,7 +49,11 @@ package
 		
 		private var defaultFont:String,
 					lastFont:String ;
+					
+		private var clipboardMC:MovieClip ;
 
+		private var copyMC:MovieClip ;
+					
 		public function unicod()
 		{
 			super();
@@ -72,6 +78,10 @@ package
 			newInputTF.addEventListener(Event.CHANGE,updateFarsiNevisText);
 			FarsiInputCorrection.setUp(newInputTF,null,true,true,false,true);
 			
+			clipboardMC = Obj.get("clipboard_mc",this);
+			clipboardMC.mouseChildren = clipboardMC.mouseEnabled = false ;
+			clipboardMC.alpha = 0;
+			
 			lastFont = defaultFont = matn2MC.defaultTextFormat.font ;
 			
 			fontNameField = Obj.get("font_name_text",this);
@@ -83,6 +93,10 @@ package
 			alignField.addEventListener(Event.CHANGE,updateFarsiNevisText);
 			
 			FrameGenerator.createFrame(stage,-1,this);
+			
+			copyMC = Obj.get("clipboard_button_mc",this);
+			copyMC.buttonMode = true ;
+			copyMC.addEventListener(MouseEvent.CLICK,copyText);
 			
 			/**Font size ↓*/
 				fontMidSize = matn2MC.defaultTextFormat.size as uint ;
@@ -119,6 +133,13 @@ package
 			sliderValueTD.text = Math.round(matn2MC.width).toString();
 		}
 		
+		protected function copyText(event:MouseEvent):void
+		{
+			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT,matn2MC.text);
+			AnimData.fadeIn(clipboardMC,function(){
+				AnimData.fadeOut(clipboardMC);
+			});
+		}		
 		
 		protected function startChangeFontSize(event:MouseEvent):void
 		{
