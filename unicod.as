@@ -9,6 +9,7 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
 	public class unicod extends Sprite
 	{
@@ -46,17 +47,20 @@ package
 			
 			FrameGenerator.createFrame(stage,-1,this);
 			
-			fontMidSize = matn2MC.defaultTextFormat.size as uint ;
-			
-			fontSizeMC = Obj.get("font_size_mc",this);
-			fontSizeTF = Obj.get("font_size_tf",fontSizeMC);
-			fontSizeMinY = fontSizeMC.y ;
-			fontSizeMaxY = 388 ;
-			
-			fontSizeMC.y = fontSizeMaxY-((fontMidSize-fontMinSize)/(fontMaxSize-fontMinSize))*(fontSizeMaxY-fontSizeMinY);
-			fontSizeTF.text = fontMidSize.toString();
-			
-			fontSizeMC.addEventListener(MouseEvent.MOUSE_DOWN,startChangeFontSize);
+			/**Font size ↓*/
+				fontMidSize = matn2MC.defaultTextFormat.size as uint ;
+				
+				fontSizeMC = Obj.get("font_size_mc",this);
+				fontSizeTF = Obj.get("font_size_tf",fontSizeMC);
+				fontSizeMC.buttonMode = true ;
+				fontSizeMinY = fontSizeMC.y ;
+				fontSizeMaxY = 388 ;
+				
+				fontSizeMC.y = fontSizeMaxY-((fontMidSize-fontMinSize)/(fontMaxSize-fontMinSize))*(fontSizeMaxY-fontSizeMinY);
+				fontSizeTF.text = fontMidSize.toString();
+				
+				fontSizeMC.addEventListener(MouseEvent.MOUSE_DOWN,startChangeFontSize);
+			/**Font size ↑*/
 			
 			matnWidth0 = matn2MC.width ;
 			matnX0 = matn2MC.x ;
@@ -93,14 +97,16 @@ package
 			
 			protected function changeFontSize(event:Event):void
 			{
-				/*var NewFontSize:uint = 
-					
-					fontSizeMinY:Number,
-				fontSizeMaxY:Number,
+				fontSizeMC.y += fontSizeMC.mouseY/4;
+				fontSizeMC.y = Math.max(fontSizeMinY,Math.min(fontSizeMC.y,fontSizeMaxY));
 				
-				fontMinSize:uint = 5,
-					fontMaxSize:uint=50,
-						fontMidSize:uint;*/
+				fontMidSize = Math.round((1-(fontSizeMC.y-fontSizeMinY)/(fontSizeMaxY-fontSizeMinY))*(fontMaxSize-fontMinSize))+fontMinSize ;
+				fontSizeTF.text = fontMidSize.toString();
+				
+				var textFormat:TextFormat = matn2MC.defaultTextFormat ;
+				textFormat.size = fontMidSize ;
+				matn2MC.setTextFormat(textFormat);
+				matn2MC.defaultTextFormat = textFormat ;
 			}
 		
 		private function chang(e){
@@ -130,14 +136,21 @@ package
 			protected function slideTheTextField(event:Event):void
 			{
 				newSliderMC.x += (stage.mouseX-newSliderMC.x)/2;
-				newSliderMC.x = Math.max(sliderX0,Math.min(matnWidth0+matnX0,newSliderMC.x));
+				newSliderMC.x = Math.max(sliderX0,Math.min(matnWidth0+matnX0-20,newSliderMC.x));
 				matn2MC.x = newSliderMC.x ;
 				matn2MC.width = matnWidth0-(newSliderMC.x-matnX0);
 			}
 			
 		private function updateFarsiNevisText():void
 		{
-			uni.HTMLfastUnicodeOnLines(matn2MC,matnMC.text,true);
+			var textFormat:TextFormat = matn2MC.defaultTextFormat ;
+			textFormat.size = fontMidSize ;
+			matn2MC.setTextFormat(textFormat);
+			matn2MC.defaultTextFormat = textFormat ;
+			try
+			{
+				uni.HTMLfastUnicodeOnLines(matn2MC,matnMC.text,true);
+			}catch(e){};
 		}
 	}
 }
