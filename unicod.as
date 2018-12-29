@@ -11,9 +11,13 @@ package
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
+	import flashx.textLayout.formats.TextAlign;
+	
+	import popForm.PopField;
+	import popForm.PopFieldBoolean;
+	
 	public class unicod extends Sprite
 	{
-		private var matnMC:Object ;
 		private var matn2MC:TextField ;
 		
 		private var matnWidth0:Number,matnX0:Number ;
@@ -21,7 +25,8 @@ package
 		private var alignMC:MovieClip ;
 		
 		private var newSliderMC:MovieClip,
-					sliderX0:Number;
+					sliderX0:Number,
+					sliderValueTD:TitleText;
 		
 		private var uni:Unicode;
 		
@@ -34,6 +39,14 @@ package
 					fontMinSize:uint = 5,
 					fontMaxSize:uint=50,
 					fontMidSize:uint;
+					
+		private var newInputTF:TextField ;
+		
+		private var fontNameField:PopField,
+					alignField:PopFieldBoolean;
+		
+		private var defaultFont:String,
+					lastFont:String ;
 
 		public function unicod()
 		{
@@ -41,9 +54,33 @@ package
 			
 			uni = new Unicode();
 			
-			matnMC = Obj.get("matn",this);
-			matn2MC = Obj.get("matn2",this);
+			var cashedMatn:TextField = Obj.get("matn2",this);
+			matn2MC = new TextField();
+			this.addChild(matn2MC);
+			matn2MC.x = cashedMatn.x;
+			matn2MC.y = cashedMatn.y;
+			matn2MC.width = cashedMatn.width ;
+			matn2MC.height = cashedMatn.height ;
+			matn2MC.embedFonts = true ;
+			var textFormat:TextFormat = new TextFormat(cashedMatn.defaultTextFormat.font,cashedMatn.defaultTextFormat.size,null,null,null,null,null,null,TextAlign.RIGHT);
+			matn2MC.defaultTextFormat = textFormat ;
 			matn2MC.border = false ;
+			Obj.remove(cashedMatn);
+			
+			newInputTF = Obj.get("input_txt",this);
+			newInputTF.text = '' ;
+			newInputTF.addEventListener(Event.CHANGE,updateFarsiNevisText);
+			FarsiInputCorrection.setUp(newInputTF,null,true,true,false,true);
+			
+			lastFont = defaultFont = matn2MC.defaultTextFormat.font ;
+			
+			fontNameField = Obj.get("font_name_text",this);
+			fontNameField.setUp('Font:',defaultFont,null,false,true,false);
+			fontNameField.addEventListener(Event.CHANGE,changeDefaultText);
+			
+			alignField = Obj.get("align_txt",this);
+			alignField.setUp("Justify:",true,false);
+			alignField.addEventListener(Event.CHANGE,updateFarsiNevisText);
 			
 			FrameGenerator.createFrame(stage,-1,this);
 			
@@ -66,19 +103,20 @@ package
 			matnX0 = matn2MC.x ;
 			
 			newSliderMC = Obj.get("new_slider_mc",this);
+			sliderValueTD = Obj.get("width_size_tf",newSliderMC);
 			newSliderMC.buttonMode = true ;
 			sliderX0 = newSliderMC.x ;
 			
 			alignMC = Obj.get("alin",this);
 			
-			matnMC.text = '';
-			matnMC.addEventListener(Event.CHANGE,chang)
 			
 			
 			newSliderMC.addEventListener(MouseEvent.MOUSE_DOWN,startDragSlider);
 			
 			matn2MC.x = newSliderMC.x ;
 			matn2MC.width = matnWidth0-(newSliderMC.x-matnX0);
+			
+			sliderValueTD.text = Math.round(matn2MC.width).toString();
 		}
 		
 		
@@ -109,7 +147,7 @@ package
 				matn2MC.defaultTextFormat = textFormat ;
 			}
 		
-		private function chang(e){
+		/*private function chang(e){
 			var myText = String(matnMC.text).split(String.fromCharCode(13)).join(String.fromCharCode(10)).split(String.fromCharCode(10));
 			var myText2=''
 			for(var i=myText.length-1;i>=0;i--){
@@ -117,7 +155,7 @@ package
 			}
 			myText2 = myText2.substring(0,myText2.length-1)
 			matn2MC.text = uni.toUnicode(myText2)
-		}
+		}*/
 		
 		protected function startDragSlider(event:MouseEvent):void
 		{
@@ -139,17 +177,45 @@ package
 				newSliderMC.x = Math.max(sliderX0,Math.min(matnWidth0+matnX0-20,newSliderMC.x));
 				matn2MC.x = newSliderMC.x ;
 				matn2MC.width = matnWidth0-(newSliderMC.x-matnX0);
+				sliderValueTD.text = Math.round(matn2MC.width).toString();
 			}
 			
-		private function updateFarsiNevisText():void
+		private function changeDefaultText(e:*):void
+		{
+			var textFormat:TextFormat = matn2MC.defaultTextFormat ;
+			if(fontNameField.text=='' || fontNameField.text==defaultFont)
+			{
+				matn2MC.embedFonts = true ;
+				lastFont = defaultFont ;
+			}
+			else
+			{
+				matn2MC.embedFonts = false ;
+				lastFont = fontNameField.text ;
+			}
+			textFormat.font = lastFont ;
+			trace("Font changed to : "+textFormat.font);
+			matn2MC.setTextFormat(textFormat);
+			matn2MC.defaultTextFormat = textFormat ;
+			//matn2MC.text = UnicodeStatic.convert('تست فونت')
+			updateFarsiNevisText();
+		}
+			
+		private function updateFarsiNevisText(e:Event=null):void
 		{
 			var textFormat:TextFormat = matn2MC.defaultTextFormat ;
 			textFormat.size = fontMidSize ;
+			if(lastFont==defaultFont)
+				matn2MC.embedFonts = true ;
+			else
+				matn2MC.embedFonts = false ;
+			textFormat.font = lastFont ;
 			matn2MC.setTextFormat(textFormat);
 			matn2MC.defaultTextFormat = textFormat ;
+			trace("The font is : "+textFormat.font);
 			try
 			{
-				uni.HTMLfastUnicodeOnLines(matn2MC,matnMC.text,true);
+				uni.HTMLfastUnicodeOnLines(matn2MC,newInputTF.text,alignField.data);
 			}catch(e){};
 		}
 	}
