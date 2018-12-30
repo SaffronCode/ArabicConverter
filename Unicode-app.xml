@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<application xmlns="http://ns.adobe.com/air/application/29.0">
+<application xmlns="http://ns.adobe.com/air/application/31.0">
   <id>ir.saffroncode.unicode</id>
-  <versionNumber>2.9</versionNumber>
+  <versionNumber>2.10</versionNumber>
   <filename>Arabic Conveter</filename>
   <description>Arabic, Farsi, Kuridish, Urdu to Unicode Coverter.</description>
 
@@ -45,6 +45,10 @@
 	  
 	  
 	  
+    <image16x16>AppIconsForPublish/16.png</image16x16>
+    <image32x32>AppIconsForPublish/32.png</image32x32>
+    <image48x48>AppIconsForPublish/48.png</image48x48>
+    <image128x128>AppIconsForPublish/128.png</image128x128>
   </icon>
   <customUpdateUI>false</customUpdateUI>
   <allowBrowserInvocation>false</allowBrowserInvocation>
