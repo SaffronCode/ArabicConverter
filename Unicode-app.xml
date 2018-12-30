@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <application xmlns="http://ns.adobe.com/air/application/31.0">
   <id>ir.saffroncode.unicode</id>
-  <versionNumber>2.10</versionNumber>
+  <versionNumber>2.11</versionNumber>
   <filename>Arabic Conveter</filename>
   <description>Arabic, Farsi, Kuridish, Urdu to Unicode Coverter.</description>
 
