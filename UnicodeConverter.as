@@ -74,7 +74,7 @@ package
 			var hintTF:TextField = Obj.get("hint_mc",newVersionMC);
 			newVersionMC.addEventListener(MouseEvent.CLICK,openUpdator);
 			
-			const fileURL:String = "https://github.com/SaffronCode/ArabicConverter/raw/master/Unicode.exe" ;
+			const fileURL:String = "https://github.com/SaffronCode/ArabicConverter/raw/master/ArabicConverter.air" ;
 			
 			function openUpdator(e:MouseEvent):void
 			{
