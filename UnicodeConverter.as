@@ -27,7 +27,7 @@ package
 	import popForm.PopField;
 	import popForm.PopFieldBoolean;
 	
-	public class unicod extends Sprite
+	public class UnicodeConverter extends Sprite
 	{
 		private var matn2MC:TextField ;
 		
@@ -65,7 +65,7 @@ package
 		
 		private var typeHereMC:MovieClip ;
 					
-		public function unicod()
+		public function UnicodeConverter()
 		{
 			super();
 			
@@ -74,7 +74,7 @@ package
 			var hintTF:TextField = Obj.get("hint_mc",newVersionMC);
 			newVersionMC.addEventListener(MouseEvent.CLICK,openUpdator);
 			
-			const fileURL:String = "https://github.com/SaffronCode/ArabicConverter/raw/master/unicod.exe" ;
+			const fileURL:String = "https://github.com/SaffronCode/ArabicConverter/raw/master/Unicode.exe" ;
 			
 			function openUpdator(e:MouseEvent):void
 			{
@@ -115,7 +115,7 @@ package
 			}
 			
 			newVersionMC.visible = false ;
-			var urlLoader:URLLoader = new URLLoader(new URLRequest("https://raw.githubusercontent.com/SaffronCode/ArabicConverter/master/unicod-app.xml?"+new Date().time));
+			var urlLoader:URLLoader = new URLLoader(new URLRequest("https://raw.githubusercontent.com/SaffronCode/ArabicConverter/master/Unicode-app.xml?"+new Date().time));
 			urlLoader.dataFormat = URLLoaderDataFormat.TEXT ;
 			urlLoader.addEventListener(Event.COMPLETE,function(e){
 				var versionPart:Array = String(urlLoader.data).match(/<versionNumber>.*<\/versionNumber>/gi);
@@ -232,9 +232,10 @@ package
 		protected function copyText(event:MouseEvent):void
 		{
 			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT,matn2MC.text);
-			AnimData.fadeIn(clipboardMC,function(){
+			clipboardMC.alpha = 2 ;
+			//AnimData.fadeIn(clipboardMC,function(){
 				AnimData.fadeOut(clipboardMC);
-			});
+			//});
 		}		
 		
 		protected function startChangeFontSize(event:MouseEvent):void
