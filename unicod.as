@@ -9,8 +9,8 @@ package
 	import flash.desktop.NativeApplication;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.events.*;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.filesystem.File;
@@ -62,6 +62,8 @@ package
 		private var clipboardMC:MovieClip ;
 
 		private var copyMC:MovieClip ;
+		
+		private var typeHereMC:MovieClip ;
 					
 		public function unicod()
 		{
@@ -72,7 +74,7 @@ package
 			var hintTF:TextField = Obj.get("hint_mc",newVersionMC);
 			newVersionMC.addEventListener(MouseEvent.CLICK,openUpdator);
 			
-			const fileURL:String = "https://github.com/SaffronCode/Adobe-Air-Assistant/raw/master/build/AppGenerator.air" ;
+			const fileURL:String = "https://github.com/SaffronCode/ArabicConverter/raw/master/unicod.exe" ;
 			
 			function openUpdator(e:MouseEvent):void
 			{
@@ -113,7 +115,7 @@ package
 			}
 			
 			newVersionMC.visible = false ;
-			var urlLoader:URLLoader = new URLLoader(new URLRequest("https://raw.githubusercontent.com/MTeamCo/FarsiNevis/master/unicod-app.xml?"+new Date().time));
+			var urlLoader:URLLoader = new URLLoader(new URLRequest("https://raw.githubusercontent.com/SaffronCode/ArabicConverter/master/unicod-app.xml?"+new Date().time));
 			urlLoader.dataFormat = URLLoaderDataFormat.TEXT ;
 			urlLoader.addEventListener(Event.COMPLETE,function(e){
 				var versionPart:Array = String(urlLoader.data).match(/<versionNumber>.*<\/versionNumber>/gi);
@@ -163,7 +165,14 @@ package
 			newInputTF = Obj.get("input_txt",this);
 			newInputTF.text = '' ;
 			newInputTF.addEventListener(Event.CHANGE,updateFarsiNevisText);
-			FarsiInputCorrection.setUp(newInputTF,null,true,true,false,true);
+			var inputarea:FarsiInputCorrection = FarsiInputCorrection.setUp(newInputTF,null,true,true,false,true);
+			
+			
+			typeHereMC = Obj.get("type_here_area",this);
+			typeHereMC.buttonMode = true ;
+			typeHereMC.addEventListener(MouseEvent.CLICK,function(e){
+				inputarea.focuseOnStageText();
+			});
 			
 			clipboardMC = Obj.get("clipboard_mc",this);
 			clipboardMC.mouseChildren = clipboardMC.mouseEnabled = false ;
