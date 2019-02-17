@@ -13,10 +13,8 @@ The arabic script converter application.
 ## Unicode Fonts
 
 
-<a href="https://github.com/SaffronCode/ArabicConverter/tree/master/UnicodeFonts">
-  <p align="center">Unicode fonts pack
-  </p>
-</a>
+<p align="center"><a href="https://github.com/SaffronCode/ArabicConverter/tree/master/UnicodeFonts">Unicode fonts pack</a></p>
+
 
 
 <br/>
