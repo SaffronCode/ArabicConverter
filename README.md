@@ -1,16 +1,14 @@
 # Arabic To Unicode Converter - فارسی نویس 
 
-The arabic script converter application. ( You need to install Adobe Air for your desctop to be able to use it ) <br/><a href="https://get.adobe.com/air/">Download Air</a>
+The arabic script converter application.
 
-<a href="https://github.com/SaffronCode/ArabicConverter/raw/master/ArabicConverter.air">
+
   <p align="center">
     <img width="300px" src="https://github.com/SaffronCode/ArabicConverter/blob/master/AppIconsForPublish/512.png?raw=true" alt=""/>
-    <br/>Download Convertor
+    <br/><a href="https://github.com/SaffronCode/ArabicConverter/raw/master/ArabicConverter.exe">Download Convertor (window)</a>
+     <br/><br/><a href="https://github.com/SaffronCode/ArabicConverter/raw/master/ArabicConverter.air">Download Convertor (.air)</a>
+     <br/><a href="https://get.adobe.com/air/">(Download Adobe Air Player)</a>
   </p>
-</a>
-<p align="center">
-  <a href="https://get.adobe.com/air/">(Download Adobe Air Player)</a>
-</p>
 
 ## Unicode Fonts
 
