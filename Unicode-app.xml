@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<application xmlns="http://ns.adobe.com/air/application/31.0">
+<application xmlns="http://ns.adobe.com/air/application/32.0">
   <id>ir.saffroncode.unicode</id>
-  <versionNumber>2.11</versionNumber>
+  <versionNumber>2.12</versionNumber>
   <filename>Arabic Conveter</filename>
-  <description>Arabic, Farsi, Kuridish, Urdu to Unicode Coverter.</description>
+  <description/>
+
+  
+
+  
+
+  
 
   
 
@@ -16,6 +22,12 @@
   
 <!-- To localize the description, use the following format for the description element.<description><text xml:lang="en">English App description goes here</text><text xml:lang="fr">French App description goes here</text><text xml:lang="ja">Japanese App description goes here</text></description>-->
   <name>Arabic Conveter</name>
+
+  
+
+  
+
+  
 
   
 
