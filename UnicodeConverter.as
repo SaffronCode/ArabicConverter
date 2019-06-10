@@ -1,4 +1,4 @@
-package
+﻿package
 {
 	import appManager.displayContentElemets.TitleText;
 	
@@ -26,6 +26,8 @@ package
 	
 	import popForm.PopField;
 	import popForm.PopFieldBoolean;
+	import flash.utils.getTimer;
+	import flash.text.TextFieldType;
 	
 	public class UnicodeConverter extends Sprite
 	{
@@ -160,7 +162,9 @@ package
 			var textFormat:TextFormat = new TextFormat(cashedMatn.defaultTextFormat.font,cashedMatn.defaultTextFormat.size,null,null,null,null,null,null,TextAlign.RIGHT);
 			matn2MC.defaultTextFormat = textFormat ;
 			matn2MC.border = false ;
+			matn2MC.type = TextFieldType.INPUT ;
 			Obj.remove(cashedMatn);
+			matn2MC.addEventListener(Event.CHANGE,revertText);
 			
 			newInputTF = Obj.get("input_txt",this);
 			newInputTF.text = '' ;
@@ -204,7 +208,7 @@ package
 				fontSizeMaxY = 388 ;
 				
 				fontSizeMC.y = fontSizeMaxY-((fontMidSize-fontMinSize)/(fontMaxSize-fontMinSize))*(fontSizeMaxY-fontSizeMinY);
-				fontSizeTF.text = fontMidSize.toString();
+				fontSizeTF.setUp(fontMidSize.toString(),false);
 				
 				fontSizeMC.addEventListener(MouseEvent.MOUSE_DOWN,startChangeFontSize);
 			/**Font size ↑*/
@@ -226,7 +230,14 @@ package
 			matn2MC.x = newSliderMC.x ;
 			matn2MC.width = matnWidth0-(newSliderMC.x-matnX0);
 			
-			sliderValueTD.text = Math.round(matn2MC.width).toString();
+			sliderValueTD.setUp(Math.round(matn2MC.width-20).toString(),false);
+		}
+
+		private function revertText(e:Event):void
+		{
+			trace("Change");
+			newInputTF.text = UnicodeStatic.revertConvert(matn2MC.text) ;
+			newInputTF.dispatchEvent(new Event(Event.CHANGE))
 		}
 		
 		protected function copyText(event:MouseEvent):void
@@ -257,7 +268,7 @@ package
 				fontSizeMC.y = Math.max(fontSizeMinY,Math.min(fontSizeMC.y,fontSizeMaxY));
 				
 				fontMidSize = Math.round((1-(fontSizeMC.y-fontSizeMinY)/(fontSizeMaxY-fontSizeMinY))*(fontMaxSize-fontMinSize))+fontMinSize ;
-				fontSizeTF.text = fontMidSize.toString();
+				fontSizeTF.setUp(fontMidSize.toString(),false);
 				
 				var textFormat:TextFormat = matn2MC.defaultTextFormat ;
 				textFormat.size = fontMidSize ;
@@ -288,6 +299,8 @@ package
 				
 				updateFarsiNevisText();
 			}
+
+			private var lastUpdateTime:Number = 0 ;
 			
 			protected function slideTheTextField(event:Event):void
 			{
@@ -295,7 +308,13 @@ package
 				newSliderMC.x = Math.max(sliderX0,Math.min(matnWidth0+matnX0-20,newSliderMC.x));
 				matn2MC.x = newSliderMC.x ;
 				matn2MC.width = matnWidth0-(newSliderMC.x-matnX0);
-				sliderValueTD.text = Math.round(matn2MC.width).toString();
+				sliderValueTD.setUp(Math.round(matn2MC.width-20).toString(),false);
+				trace("getTimer()-lastUpdateTime : "+(getTimer()-lastUpdateTime)+' >> '+lastUpdateTime+" >> "+getTimer());
+				if(getTimer()-lastUpdateTime>100)
+				{
+					updateFarsiNevisText();
+					lastUpdateTime = getTimer();
+				}
 			}
 			
 		private function changeDefaultText(e:*):void
