@@ -70,6 +70,8 @@
 		public function UnicodeConverter()
 		{
 			super();
+
+			Unicode.estesna = '-[]»«)("/\\:.';
 			
 			
 			var newVersionMC:MovieClip = Obj.get("new_version_mc",this);
