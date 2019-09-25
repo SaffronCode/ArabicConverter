@@ -162,7 +162,7 @@
 			var textFormat:TextFormat = new TextFormat(cashedMatn.defaultTextFormat.font,cashedMatn.defaultTextFormat.size,null,null,null,null,null,null,TextAlign.RIGHT);
 			matn2MC.defaultTextFormat = textFormat ;
 			matn2MC.border = false ;
-			matn2MC.type = TextFieldType.INPUT ;
+			//matn2MC.type = TextFieldType.INPUT ;
 			Obj.remove(cashedMatn);
 			matn2MC.addEventListener(Event.CHANGE,revertText);
 			
