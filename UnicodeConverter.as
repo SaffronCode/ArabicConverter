@@ -29,6 +29,9 @@
 	import flash.utils.getTimer;
 	import flash.text.TextFieldType;
 	import dataManager.GlobalStorage;
+	import com.mteamapp.VersionController;
+	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 	
 	public class UnicodeConverter extends Sprite
 	{
@@ -88,6 +91,14 @@
 			clearMC = Obj.get("clear_mc",this);
 			Obj.setButton(clearMC,clearText)
 			
+			var versionCOntrolRequest:URLRequest = new URLRequest("https://saffroncodesdk.com/api/Projects/versioncontrol");
+			versionCOntrolRequest.method = URLRequestMethod.POST ;
+			versionCOntrolRequest.data = JSON.stringify({AppId:DevicePrefrence.appID}) ;
+			versionCOntrolRequest.contentType = 'application/json';
+			VersionController.controllVersion(new Function(),new Function(),versionCOntrolRequest);
+
+
+
 			
 			var newVersionMC:MovieClip = Obj.get("new_version_mc",this);
 			var hintTF:TextField = Obj.get("hint_mc",newVersionMC);
