@@ -28,6 +28,7 @@
 	import popForm.PopFieldBoolean;
 	import flash.utils.getTimer;
 	import flash.text.TextFieldType;
+	import dataManager.GlobalStorage;
 	
 	public class UnicodeConverter extends Sprite
 	{
@@ -56,22 +57,36 @@
 		private var newInputTF:TextField ;
 		
 		private var fontNameField:PopField,
-					alignField:PopFieldBoolean;
+					alignField:PopFieldBoolean,
+					googleFontField:PopFieldBoolean;
 		
 		private var defaultFont:String,
 					lastFont:String ;
 					
+		private var clearMC:MovieClip ;
+
 		private var clipboardMC:MovieClip ;
 
 		private var copyMC:MovieClip ;
 		
 		private var typeHereMC:MovieClip ;
+
+		
+			private const ID_ALIGHN:String = "ID_ALIGHN";
+			private const ID_GOOGLE_FONT:String = "ID_GOOGLE_FONT";
+			private const ID_AREA_WIDTH:String = "ID_AREA_WIDTH";
+			private const ID_FONT_NAME:String = "ID_FONT_NAME";
+			private const ID_CASHED_TEXT:String = "ID_CASHED_TEXT";
+			private const ID_FONT_SIZE:String = "ID_FONT_SIZE";
 					
 		public function UnicodeConverter()
 		{
 			super();
 
 			Unicode.estesna = '-[]»«)("/\\:.';
+
+			clearMC = Obj.get("clear_mc",this);
+			Obj.setButton(clearMC,clearText)
 			
 			
 			var newVersionMC:MovieClip = Obj.get("new_version_mc",this);
@@ -169,7 +184,7 @@
 			matn2MC.addEventListener(Event.CHANGE,revertText);
 			
 			newInputTF = Obj.get("input_txt",this);
-			newInputTF.text = '' ;
+			newInputTF.text = GlobalStorage.load(ID_CASHED_TEXT)==null?'': GlobalStorage.load(ID_CASHED_TEXT);
 			newInputTF.addEventListener(Event.CHANGE,updateFarsiNevisText);
 			var inputarea:FarsiInputCorrection = FarsiInputCorrection.setUp(newInputTF,null,true,true,false,true);
 			
@@ -190,9 +205,20 @@
 			fontNameField.setUp('Font:',defaultFont,null,false,true,false);
 			fontNameField.addEventListener(Event.CHANGE,changeDefaultText);
 			
+			if(GlobalStorage.load(ID_FONT_NAME)!=null)
+			{
+				lastFont = fontNameField.text = GlobalStorage.load(ID_FONT_NAME) ;
+			}
+			
+			
+
 			alignField = Obj.get("align_txt",this);
-			alignField.setUp("Justify:",true,false);
-			alignField.addEventListener(Event.CHANGE,updateFarsiNevisText);
+			alignField.setUp("Justify:",GlobalStorage.load(ID_ALIGHN)?true:false,false);
+			alignField.addEventListener(Event.CHANGE,updateFarsiNevisText);		
+			
+			googleFontField = Obj.get("google_fonts_txt",this);
+			googleFontField.setUp("GoogleFont:",GlobalStorage.load(ID_GOOGLE_FONT)?true:false,false);
+			googleFontField.addEventListener(Event.CHANGE,updateFarsiNevisText);
 			
 			FrameGenerator.createFrame(stage,-1,this);
 			
@@ -201,7 +227,13 @@
 			copyMC.addEventListener(MouseEvent.CLICK,copyText);
 			
 			/**Font size ↓*/
-				fontMidSize = matn2MC.defaultTextFormat.size as uint ;
+			
+
+				fontMidSize = uint(GlobalStorage.load(ID_FONT_SIZE)); ;
+				if(fontMidSize==0)
+				{
+					fontMidSize = matn2MC.defaultTextFormat.size as uint;
+				}
 				
 				fontSizeMC = Obj.get("font_size_mc",this);
 				fontSizeTF = Obj.get("font_size_tf",fontSizeMC);
@@ -233,6 +265,20 @@
 			matn2MC.width = matnWidth0-(newSliderMC.x-matnX0);
 			
 			sliderValueTD.setUp(Math.round(matn2MC.width-20).toString(),false);
+
+			
+			if(GlobalStorage.load(ID_AREA_WIDTH)!=null)
+			{
+				newSliderMC.x = GlobalStorage.load(ID_AREA_WIDTH);
+				slideTheTextField(null);
+			}
+			updateFarsiNevisText();
+		}
+
+		private function clearText():void
+		{
+			matn2MC.text = '' ;
+			matn2MC.dispatchEvent(new Event(Event.CHANGE));
 		}
 
 		private function revertText(e:Event):void
@@ -306,13 +352,16 @@
 			
 			protected function slideTheTextField(event:Event):void
 			{
-				newSliderMC.x += (stage.mouseX-newSliderMC.x)/2;
-				newSliderMC.x = Math.max(sliderX0,Math.min(matnWidth0+matnX0-20,newSliderMC.x));
+				if(event!=null)
+				{
+					newSliderMC.x += (stage.mouseX-newSliderMC.x)/2;
+					newSliderMC.x = Math.max(sliderX0,Math.min(matnWidth0+matnX0-20,newSliderMC.x));
+				}
 				matn2MC.x = newSliderMC.x ;
 				matn2MC.width = matnWidth0-(newSliderMC.x-matnX0);
 				sliderValueTD.setUp(Math.round(matn2MC.width-20).toString(),false);
 				trace("getTimer()-lastUpdateTime : "+(getTimer()-lastUpdateTime)+' >> '+lastUpdateTime+" >> "+getTimer());
-				if(getTimer()-lastUpdateTime>100)
+				if(event==null || getTimer()-lastUpdateTime>100)
 				{
 					updateFarsiNevisText();
 					lastUpdateTime = getTimer();
@@ -342,6 +391,7 @@
 			
 		private function updateFarsiNevisText(e:Event=null):void
 		{
+			Unicode.newFontMode = googleFontField.data ;
 			var textFormat:TextFormat = matn2MC.defaultTextFormat ;
 			textFormat.size = fontMidSize ;
 			if(lastFont==defaultFont)
@@ -356,6 +406,13 @@
 			{
 				uni.HTMLfastUnicodeOnLines(matn2MC,newInputTF.text,alignField.data);
 			}catch(e){};
+
+			GlobalStorage.save(ID_ALIGHN,alignField.data,false);
+			GlobalStorage.save(ID_GOOGLE_FONT,googleFontField.data,false);
+			GlobalStorage.save(ID_AREA_WIDTH,newSliderMC.x,false);
+			GlobalStorage.save(ID_FONT_NAME,lastFont,false);
+			GlobalStorage.save(ID_FONT_SIZE,fontMidSize,false);
+			GlobalStorage.save(ID_CASHED_TEXT,newInputTF.text);
 		}
 	}
 }
